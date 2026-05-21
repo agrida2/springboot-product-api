@@ -13,11 +13,18 @@ public class ProductRequest {
     @Positive(message = "Product price must be greater than 0")
     private Double price;
 
+    @NotNull(message = "Category is required")
+    private Long categoryId;
+
     public String getName() {
         return name;
     }
 
     public Double getPrice() {
         return price;
+    }
+
+    public Long getCategoryId() {
+        return categoryId;
     }
 }

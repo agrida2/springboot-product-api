@@ -3,7 +3,9 @@ package com.azzeddine.productapi.service;
 import com.azzeddine.productapi.dto.ProductRequest;
 import com.azzeddine.productapi.dto.ProductResponse;
 import com.azzeddine.productapi.exception.ProductNotFoundException;
+import com.azzeddine.productapi.model.Category;
 import com.azzeddine.productapi.model.Product;
+import com.azzeddine.productapi.repository.CategoryRepository;
 import com.azzeddine.productapi.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
@@ -15,9 +17,11 @@ import java.util.List;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final CategoryRepository categoryRepository;
 
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository,CategoryRepository categoryRepository) {
         this.productRepository = productRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     public Page<ProductResponse> getAllProducts(Pageable pageable) {
@@ -35,6 +39,11 @@ public class ProductService {
         product.setName(request.getName());
         product.setPrice(request.getPrice());
 
+        Category category = categoryRepository.findById(request.getCategoryId())
+                .orElseThrow(() -> new RuntimeException("Category not found"));
+
+        product.setCategory(category);
+
         Product savedProduct = productRepository.save(product);
 
         return mapToResponse(savedProduct);
@@ -45,6 +54,11 @@ public class ProductService {
 
         product.setName(request.getName());
         product.setPrice(request.getPrice());
+
+        Category category = categoryRepository.findById(request.getCategoryId())
+                .orElseThrow(() -> new RuntimeException("Category not found"));
+
+        product.setCategory(category);
 
         Product updatedProduct = productRepository.save(product);
 
@@ -65,7 +79,8 @@ public class ProductService {
         return new ProductResponse(
                 product.getId(),
                 product.getName(),
-                product.getPrice()
+                product.getPrice(),
+                product.getCategory().getName()
         );
     }
 }

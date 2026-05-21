@@ -7,17 +7,12 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class Product {
+public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
     private String name;
-
-    private Double price;
-
-    @ManyToOne
-    @JoinColumn(name = "category_id")
-    private Category category;
 }
