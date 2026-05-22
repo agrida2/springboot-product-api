@@ -42,4 +42,15 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(errors);
     }
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleCategoryNotFound(
+            CategoryNotFoundException ex
+    ) {
+        Map<String, String> error = new HashMap<>();
+        error.put("message", ex.getMessage());
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(error);
+    }
 }
